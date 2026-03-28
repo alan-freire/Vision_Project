@@ -1,0 +1,33 @@
+# IntelliJ / Android Studio
+*.iml
+.idea/
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+
+# Gradle
+.gradle/
+build/
+app/build/
+
+# Local config
+local.properties
+
+# System files
+.DS_Store
+
+# NDK / C++
+.externalNativeBuild/
+.cxx/
+
+# Captures
+/captures/
+
+# Arquivos grandes (SEMPRE ignorar)
+*.zip
+*.rar
+
+# OpenCV (não versionar SDK)
+OpenCV-android-sdk/
+opencv-4.13.0-android-sdk.zip
