@@ -1,46 +1,69 @@
 # VisionProject
 
-Projeto desenvolvido como parte da disciplina de Visão Computacional.
+Aplicativo Android desenvolvido em Java no contexto da disciplina de Visão Computacional, com foco na configuração do ambiente de desenvolvimento e na implementação inicial de captura de imagens por meio da câmera traseira do dispositivo.
 
-## Objetivo
+## Finalidade do projeto
 
-Desenvolver um aplicativo Android em Java capaz de:
+O projeto foi desenvolvido com o objetivo de implementar uma aplicação Android capaz de:
 
-- abrir a câmera traseira do dispositivo;
-- exibir o preview da câmera em tempo real;
-- capturar o frame atual;
+- inicializar a câmera traseira do dispositivo;
+- exibir o fluxo de imagem em tempo real na interface;
+- capturar o frame atual sob demanda do usuário;
 - salvar a imagem capturada em formato JPEG no armazenamento interno.
 
-## Tecnologias utilizadas
+## Contexto acadêmico
 
-- Android Studio
-- Java
-- CameraX
-- Gradle
+Este projeto integra uma atividade prática voltada à familiarização com:
+
+- a estrutura básica de um projeto Android;
+- o uso do Android Studio como ambiente de desenvolvimento;
+- a integração da biblioteca CameraX;
+- a manipulação inicial de imagens em aplicações voltadas à visão computacional.
+
+## Tecnologias e componentes utilizados
+
+- **Android Studio**
+- **Java**
+- **CameraX**
+- **Gradle**
+- **PreviewView** para exibição do fluxo da câmera
+- **ImageCapture** para registro e salvamento da imagem
 
 ## Estrutura do projeto
 
-- `app/` – código-fonte principal do aplicativo
-- `gradle/` – arquivos de configuração do Gradle
-- `build.gradle.kts` – configuração principal do projeto
-- `settings.gradle.kts` – definição dos módulos do projeto
+A organização principal do projeto é composta pelos seguintes elementos:
+
+- `app/` – módulo principal da aplicação;
+- `gradle/` – arquivos auxiliares de configuração do Gradle;
+- `build.gradle.kts` – configuração principal do projeto;
+- `settings.gradle.kts` – definição da estrutura de módulos;
+- `gradlew` e `gradlew.bat` – scripts de execução do Gradle Wrapper;
+- `.gitignore` – definição dos arquivos e diretórios não versionados.
 
 ## Funcionalidades implementadas
 
-- inicialização da câmera traseira;
-- visualização em tempo real via `PreviewView`;
-- botão para captura da imagem;
-- salvamento local da imagem capturada.
+Até o estágio atual de desenvolvimento, foram implementadas as seguintes funcionalidades:
 
-## Execução
+- abertura da câmera traseira do dispositivo;
+- exibição do preview da câmera em tempo real;
+- captura de imagem por interação do usuário;
+- salvamento local da imagem capturada em formato JPEG.
 
-1. Abrir o projeto no Android Studio.
-2. Aguardar o carregamento das dependências Gradle.
-3. Conectar um dispositivo Android com depuração USB ativada ou iniciar um emulador.
-4. Executar o aplicativo.
-5. Permitir acesso à câmera, se solicitado.
-6. Utilizar o botão de captura para salvar a imagem.
+## Procedimento de execução
 
-## Observação
+Para executar o projeto, recomenda-se o seguinte fluxo:
 
-Este projeto foi desenvolvido para fins acadêmicos, com foco na configuração do ambiente Android e na implementação inicial de captura de imagem em aplicações de visão computacional.
+1. Abrir o projeto no Android Studio;
+2. Aguardar a sincronização completa das dependências Gradle;
+3. Conectar um dispositivo Android com depuração USB habilitada, ou iniciar um emulador compatível;
+4. Executar a aplicação;
+5. Conceder as permissões necessárias de câmera;
+6. Utilizar o botão de captura para registrar e salvar a imagem.
+
+## Observações
+
+Este projeto representa uma etapa introdutória, porém fundamental, para o desenvolvimento de aplicações mais avançadas em visão computacional embarcada em dispositivos móveis. A implementação realizada estabelece a base para futuras extensões, como processamento de imagens, extração de características, detecção de objetos e integração com bibliotecas especializadas.
+
+## Autor
+
+Projeto desenvolvido por **Alan Freire** no âmbito das atividades acadêmicas da disciplina de **Visão Computacional**.
