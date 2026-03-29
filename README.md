@@ -1,117 +1,153 @@
 # VisionProject
 
-Aplicativo Android desenvolvido em Java no contexto da disciplina de **Visão Computacional**, com foco na captura e no processamento básico de imagens em dispositivos móveis.
+## Descrição
 
-## Finalidade do projeto
+O **VisionProject** consiste em uma aplicação Android desenvolvida em **Java**, no contexto da disciplina de **Visão Computacional**, com o propósito de integrar captura de imagens em dispositivos móveis e operações iniciais de processamento digital de imagens.
 
-O projeto foi desenvolvido com o objetivo de implementar uma aplicação Android capaz de:
+A aplicação foi estruturada como continuidade de uma atividade prática introdutória, inicialmente voltada à configuração do ambiente e à captura de imagens com a câmera traseira do dispositivo, sendo posteriormente estendida para contemplar uma pipeline básica de processamento com a biblioteca **OpenCV**.
+
+## Objetivo
+
+O objetivo do projeto é implementar uma aplicação Android capaz de:
 
 - inicializar a câmera traseira do dispositivo;
 - exibir o fluxo de imagem em tempo real na interface;
-- capturar o frame atual sob demanda do usuário;
-- salvar a imagem capturada;
-- aplicar uma pipeline básica de processamento de imagens;
-- converter a imagem para tons de cinza;
+- capturar imagens sob demanda do usuário;
+- aplicar operações básicas de processamento digital de imagens;
+- converter a imagem capturada para escala de cinza;
 - aplicar suavização com filtro Gaussiano;
-- detectar bordas utilizando o algoritmo de Canny;
-- permitir o ajuste dos limiares do Canny em tempo real por meio de controles deslizantes;
-- salvar as imagens resultantes do processamento.
+- detectar bordas por meio do algoritmo de **Canny**;
+- permitir o ajuste interativo dos limiares do detector de bordas;
+- salvar os resultados do processamento para posterior análise.
 
-## Contexto acadêmico
+## Contextualização acadêmica
 
-Este projeto integra atividades práticas da disciplina de **Visão Computacional**, voltadas à familiarização com:
+O desenvolvimento deste projeto está inserido no processo de aprendizagem de fundamentos de **visão computacional aplicada a dispositivos móveis**, envolvendo:
 
-- a estrutura básica de um projeto Android;
-- o uso do Android Studio como ambiente de desenvolvimento;
-- a integração da biblioteca CameraX;
-- a integração da biblioteca OpenCV em aplicações Android;
-- operações iniciais de processamento digital de imagens;
-- análise do efeito dos limiares na detecção de bordas.
+- estruturação de projetos Android no **Android Studio**;
+- integração da biblioteca **CameraX**;
+- utilização da biblioteca **OpenCV** em ambiente Android;
+- compreensão prática de conceitos como:
+  - aquisição de imagens;
+  - conversão para tons de cinza;
+  - suavização por filtro Gaussiano;
+  - detecção de bordas;
+  - influência dos limiares na sensibilidade do algoritmo.
 
-## Tecnologias e componentes utilizados
+A proposta da atividade buscou relacionar a implementação prática com conceitos teóricos de amostragem, quantização, filtragem e realce de características estruturais em imagens digitais.
 
-- Android Studio
-- Java
-- CameraX
-- OpenCV
-- Gradle
-- PreviewView para exibição do fluxo da câmera
-- ImageCapture para captura e salvamento da imagem
-- SeekBar para ajuste dos limiares do detector de bordas
-- ImageView para exibição da imagem processada
+## Tecnologias utilizadas
+
+O projeto foi desenvolvido com os seguintes recursos:
+
+- **Android Studio**
+- **Java**
+- **Gradle**
+- **CameraX**
+- **OpenCV**
+- **PreviewView**
+- **ImageCapture**
+- **SeekBar**
+- **ImageView**
 
 ## Funcionalidades implementadas
 
-Até o estágio atual de desenvolvimento, foram implementadas as seguintes funcionalidades:
+Na versão atual, a aplicação contempla as seguintes funcionalidades:
 
-- abertura da câmera traseira do dispositivo;
-- exibição do preview da câmera em tempo real;
-- captura de imagem por interação do usuário;
-- salvamento local da imagem capturada;
-- carregamento da última imagem capturada para processamento;
-- conversão da imagem para escala de cinza;
+- abertura e inicialização da câmera traseira do dispositivo;
+- exibição do preview em tempo real;
+- captura de imagem por ação do usuário;
+- armazenamento da imagem capturada;
+- carregamento da imagem para processamento;
+- conversão da imagem original para escala de cinza;
 - aplicação de filtro Gaussiano para suavização;
-- detecção de bordas com Canny;
-- ajuste em tempo real dos limiares do Canny;
+- detecção de bordas com o algoritmo de Canny;
+- ajuste dinâmico dos limiares do detector por meio de controles deslizantes;
 - exibição da imagem processada na interface;
-- salvamento de quatro imagens na galeria:
-  - imagem original;
-  - imagem em tons de cinza;
-  - imagem suavizada;
-  - imagem com bordas detectadas.
+- salvamento de quatro versões da imagem:
+  - original;
+  - em tons de cinza;
+  - suavizada;
+  - com bordas detectadas.
 
-## Estrutura do projeto
+## Pipeline de processamento
 
-A organização principal do projeto é composta pelos seguintes elementos:
+A pipeline implementada na aplicação segue a sequência descrita abaixo:
 
-- `app/` – módulo principal da aplicação;
-- `src/main/java/` – código-fonte da aplicação;
-- `src/main/res/layout/` – arquivos de interface;
-- `build.gradle.kts` – configuração principal do módulo;
-- `settings.gradle.kts` – definição da estrutura de módulos;
-- `gradlew` e `gradlew.bat` – scripts de execução do Gradle Wrapper;
-- `.gitignore` – definição dos arquivos e diretórios não versionados.
-
-## Procedimento de execução
-
-Para executar o projeto, recomenda-se o seguinte fluxo:
-
-1. Abrir o projeto no Android Studio;
-2. Aguardar a sincronização completa das dependências Gradle;
-3. Conectar um dispositivo Android com depuração USB habilitada, ou iniciar um emulador compatível;
-4. Executar a aplicação;
-5. Conceder as permissões necessárias de câmera;
-6. Utilizar o botão **Capturar** para registrar a imagem;
-7. Ajustar os limiares do detector de bordas com os controles deslizantes;
-8. Utilizar o botão **Processar** para executar a pipeline de processamento e salvar os resultados.
-
-## Pipeline de processamento implementada
-
-A pipeline utilizada no aplicativo segue a sequência:
-
-1. captura da imagem;
+1. captura da imagem original;
 2. conversão para escala de cinza;
 3. aplicação de filtro Gaussiano;
 4. detecção de bordas com Canny;
-5. exibição do resultado;
-6. salvamento das imagens processadas.
+5. exibição do resultado processado;
+6. salvamento das imagens geradas.
 
-## Observações
+## Estrutura geral do projeto
 
-Este projeto representa uma etapa introdutória, porém fundamental, para o desenvolvimento de aplicações mais avançadas em visão computacional embarcada em dispositivos móveis. A implementação realizada estabelece base para futuras extensões, como:
+A organização do repositório está centrada nos seguintes componentes:
 
-- segmentação de objetos;
-- extração de características;
-- mensuração corporal de animais;
-- detecção automática de contornos;
-- integração com métodos mais avançados de análise de imagens.
+- `app/` — módulo principal da aplicação;
+- `app/src/main/java/` — código-fonte em Java;
+- `app/src/main/res/layout/` — arquivos de interface gráfica;
+- `build.gradle.kts` — configuração de dependências e build;
+- `settings.gradle.kts` — definição estrutural do projeto;
+- `gradlew` e `gradlew.bat` — scripts do Gradle Wrapper;
+- `.gitignore` — definição de arquivos e diretórios não versionados.
 
-Durante os testes desta etapa, foi utilizada uma imagem de **cachorro** como objeto de validação do pipeline, embora o objetivo futuro do projeto seja a aplicação em **equinos** para extração de medidas corporais.
+## Procedimento de execução
+
+Para executar o projeto, recomenda-se o seguinte procedimento:
+
+1. abrir o projeto no **Android Studio**;
+2. aguardar a sincronização completa das dependências Gradle;
+3. conectar um dispositivo Android com depuração USB habilitada, ou utilizar um emulador compatível;
+4. executar a aplicação;
+5. conceder as permissões necessárias de acesso à câmera;
+6. utilizar o botão **Capturar** para registrar a imagem;
+7. ajustar os limiares do detector de bordas conforme necessário;
+8. utilizar o botão **Processar** para executar a pipeline de processamento;
+9. verificar o salvamento das imagens processadas no dispositivo.
+
+## Resultados observados
+
+Durante os testes realizados, verificou-se que o comportamento do detector de bordas Canny apresentou sensibilidade significativa em relação aos limiares selecionados.
+
+De modo geral:
+
+- limiares mais baixos produziram maior quantidade de ruído, resultando na detecção de bordas falsas;
+- limiares mais elevados reduziram a presença de ruído, porém também ocasionaram perda de bordas relevantes;
+- valores intermediários forneceram resultados mais equilibrados, preservando melhor as estruturas principais da imagem.
+
+Essas observações são coerentes com o comportamento teórico do algoritmo, uma vez que a escolha dos limiares influencia diretamente o equilíbrio entre sensibilidade e robustez da detecção.
+
+## Observações experimentais
+
+Embora o objetivo futuro do projeto esteja associado à **extração de medidas corporais em equinos**, nesta etapa foi utilizada uma **imagem do meu cachorro (Juca)** para validação do pipeline de processamento.
+
+Tal escolha não compromete a atividade, uma vez que o foco da prática esteve na implementação e verificação do funcionamento do fluxo de captura, filtragem, detecção de bordas e salvamento das imagens resultantes.
+
+## Perspectivas futuras
+
+A implementação atual estabelece base para extensões posteriores, tais como:
+
+- segmentação de objetos de interesse;
+- extração de contornos com maior robustez;
+- mensuração corporal automatizada;
+- identificação de pontos anatômicos;
+- desenvolvimento de métodos aplicados à avaliação morfométrica de animais.
 
 ## Apoio no desenvolvimento
 
-O desenvolvimento contou com apoio do **ChatGPT** como ferramenta auxiliar para orientação técnica, organização do fluxo de implementação, correção de trechos de código e estruturação do relatório acadêmico.
+O desenvolvimento desta atividade contou com o apoio do **ChatGPT** como ferramenta auxiliar de suporte técnico e organização do processo de implementação, sendo utilizado para:
+
+- esclarecimento de dúvidas sobre configuração do projeto;
+- apoio na integração entre **CameraX** e **OpenCV**;
+- orientação na construção da interface;
+- suporte na estruturação do código;
+- auxílio na redação e organização textual do relatório.
+
+O uso da ferramenta ocorreu como suporte complementar ao processo de aprendizagem, sem substituir a execução prática, os testes realizados e a interpretação dos resultados obtidos.
 
 ## Autor
 
-Projeto desenvolvido por **Alan Freire** no âmbito das atividades acadêmicas da disciplina de **Visão Computacional**.
+**Alan Freire**  
+Projeto desenvolvido no âmbito das atividades acadêmicas da disciplina de **Visão Computacional**.
