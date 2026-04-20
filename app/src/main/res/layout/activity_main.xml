@@ -9,15 +9,15 @@
     <androidx.camera.view.PreviewView
         android:id="@+id/previewView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="270dp"
         android:layout_weight="1" />
 
     <ImageView
         android:id="@+id/imageViewProcessada"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:scaleType="fitCenter"
-        android:contentDescription="Imagem processada" />
+        android:contentDescription="Imagem processada"
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/txtThreshold1"
