@@ -23,41 +23,41 @@
         android:id="@+id/txtThreshold1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Limiar 1: 50"
         android:paddingStart="16dp"
-        android:paddingTop="8dp" />
+        android:paddingTop="8dp"
+        android:text="Limiar 1: 50" />
 
     <SeekBar
         android:id="@+id/seekBarThreshold1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:max="255"
-        android:progress="50"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp" />
+        android:paddingEnd="16dp"
+        android:progress="50" />
 
     <TextView
         android:id="@+id/txtThreshold2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Limiar 2: 150"
         android:paddingStart="16dp"
-        android:paddingTop="8dp" />
+        android:paddingTop="8dp"
+        android:text="Theta: 0.85" />
 
     <SeekBar
         android:id="@+id/seekBarThreshold2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="255"
-        android:progress="150"
+        android:max="30"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp" />
+        android:paddingEnd="16dp"
+        android:progress="15" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center"
+        android:orientation="horizontal"
         android:padding="12dp">
 
         <Button
@@ -73,5 +73,18 @@
             android:layout_marginStart="12dp"
             android:text="Processar" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvDebug"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp"
+        android:background="#AA000000"
+        android:padding="10dp"
+        android:text="Debug"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp" />
 
 </LinearLayout>

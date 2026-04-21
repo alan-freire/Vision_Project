@@ -20,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.Preview;
@@ -31,7 +32,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -40,6 +44,8 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar seekBarThreshold2;
     private TextView txtThreshold1;
     private TextView txtThreshold2;
+    private TextView tvDebug;
+
+    private PeakModule peakModule;
+    private ExecutorService cameraExecutor;
 
     private File ultimaFotoArquivo;
     private Bitmap ultimaBitmapOriginal;
@@ -79,6 +89,12 @@ public class MainActivity extends AppCompatActivity {
         seekBarThreshold2 = findViewById(R.id.seekBarThreshold2);
         txtThreshold1 = findViewById(R.id.txtThreshold1);
         txtThreshold2 = findViewById(R.id.txtThreshold2);
+        tvDebug = findViewById(R.id.tvDebug);
+
+        peakModule = new PeakModule();
+        peakModule.setTheta(getThetaFromSeekBar());
+
+        cameraExecutor = Executors.newSingleThreadExecutor();
 
         Button btnCapturar = findViewById(R.id.btnCapturar);
         Button btnProcessar = findViewById(R.id.btnProcessar);
@@ -107,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
         seekBarThreshold2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                peakModule.setTheta(getThetaFromSeekBar());
                 atualizarTextosThreshold();
-                processarUltimaFoto(false);
             }
 
             @Override
@@ -128,9 +144,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private double getThetaFromSeekBar() {
+        return 0.70 + (seekBarThreshold2.getProgress() / 100.0);
+    }
+
     private void atualizarTextosThreshold() {
         txtThreshold1.setText("Limiar 1: " + seekBarThreshold1.getProgress());
-        txtThreshold2.setText("Limiar 2: " + seekBarThreshold2.getProgress());
+        txtThreshold2.setText(String.format(Locale.US, "Theta: %.2f", getThetaFromSeekBar()));
     }
 
     private void startCamera() {
@@ -146,6 +166,18 @@ public class MainActivity extends AppCompatActivity {
 
                 imageCapture = new ImageCapture.Builder().build();
 
+                ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
+                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .build();
+
+                imageAnalysis.setAnalyzer(
+                        cameraExecutor,
+                        new FrameAnalyzer(
+                                peakModule,
+                                result -> runOnUiThread(() -> updateDebugText(result))
+                        )
+                );
+
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
 
                 cameraProvider.unbindAll();
@@ -153,7 +185,8 @@ public class MainActivity extends AppCompatActivity {
                         this,
                         cameraSelector,
                         preview,
-                        imageCapture
+                        imageCapture,
+                        imageAnalysis
                 );
 
             } catch (Exception e) {
@@ -161,6 +194,85 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Erro ao iniciar câmera", Toast.LENGTH_LONG).show();
             }
         }, ContextCompat.getMainExecutor(this));
+    }
+
+    private void updateDebugText(ProcessResult result) {
+        if (result == null) return;
+
+        try {
+            String creText = Double.isInfinite(result.creSeconds)
+                    ? "INF"
+                    : String.format(Locale.US, "%.2f s", result.creSeconds);
+
+            String centroText = (result.centroidX < 0 || result.centroidY < 0)
+                    ? "(-,-)"
+                    : String.format(Locale.US, "(%.1f, %.1f)", result.centroidX, result.centroidY);
+
+            String texto = String.format(
+                    Locale.US,
+                    "Status: %s\nr1: %.4f\nTheta: %.2f\nTempo/frame: %.2f ms\nCRE: %s\nROI pixels: %d\nITA pixels: %d\nITA iters: %d\nCentro: %s\nResolução proc.: %dx%d",
+                    result.status.name(),
+                    result.r1,
+                    peakModule.getTheta(),
+                    result.processingMs,
+                    creText,
+                    result.roiPixelCount,
+                    result.itaPixelCount,
+                    result.itaIterations,
+                    centroText,
+                    result.frameWidth,
+                    result.frameHeight
+            );
+
+            tvDebug.setText(texto);
+            updateRoiPreview(result);
+
+        } finally {
+            if (result.processedGraySmall != null) {
+                result.processedGraySmall.release();
+            }
+            if (result.roiMaskSmall != null) {
+                result.roiMaskSmall.release();
+            }
+            if (result.itaMaskSmall != null) {
+                result.itaMaskSmall.release();
+            }
+        }
+    }
+
+    private void updateRoiPreview(ProcessResult result) {
+        if (result.processedGraySmall == null || result.roiMaskSmall == null || result.itaMaskSmall == null) {
+            return;
+        }
+
+        Mat display = new Mat();
+        Mat redLayer = new Mat(result.processedGraySmall.size(), CvType.CV_8UC4, new Scalar(255, 0, 0, 255));
+        Mat greenLayer = new Mat(result.processedGraySmall.size(), CvType.CV_8UC4, new Scalar(0, 255, 0, 255));
+
+        try {
+            Imgproc.cvtColor(result.processedGraySmall, display, Imgproc.COLOR_GRAY2RGBA);
+
+            redLayer.copyTo(display, result.roiMaskSmall);
+            greenLayer.copyTo(display, result.itaMaskSmall);
+
+            if (result.centroidX >= 0 && result.centroidY >= 0) {
+                Point center = new Point(result.centroidX, result.centroidY);
+                Point base = new Point(display.cols() / 2.0, display.rows() - 1.0);
+
+                Imgproc.line(display, base, center, new Scalar(0, 0, 255, 255), 1);
+                Imgproc.circle(display, center, 2, new Scalar(0, 0, 255, 255), -1);
+            }
+
+            Bitmap bitmap = Bitmap.createBitmap(display.cols(), display.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(display, bitmap);
+
+            imageViewProcessada.setImageBitmap(bitmap);
+
+        } finally {
+            display.release();
+            redLayer.release();
+            greenLayer.release();
+        }
     }
 
     private void tirarFoto() {
@@ -237,10 +349,7 @@ public class MainActivity extends AppCompatActivity {
         Imgproc.GaussianBlur(matCinza, matSuavizada, new Size(5, 5), 0);
 
         double limiar1 = seekBarThreshold1.getProgress();
-        double limiar2 = seekBarThreshold2.getProgress();
-        if (limiar2 <= limiar1) {
-            limiar2 = limiar1 + 1;
-        }
+        double limiar2 = Math.min(255.0, Math.max(limiar1 + 1.0, limiar1 * 3.0));
 
         Mat matBordas = new Mat();
         Imgproc.Canny(matSuavizada, matBordas, limiar1, limiar2);
@@ -309,6 +418,19 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (cameraExecutor != null) {
+            cameraExecutor.shutdown();
+        }
+
+        if (peakModule != null) {
+            peakModule.resetReference();
         }
     }
 }
